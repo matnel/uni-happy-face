@@ -16,6 +16,7 @@ type User {
   name: String! @unique
   expoPushToken: String @unique
   entries: [Entry!]! @relation(name: "EntriesByUser", onDelete: CASCADE)
+  rooms: [Room!]! @relation(name: "UsersByRooms")
 }
 
 type Entry {
@@ -24,4 +25,14 @@ type Entry {
   updatedAt: DateTime! @updatedAt
   user: User! @relation(link: TABLE, name: "EntriesByUser")
   gif: Gif! @relation(name: "EntryGIF", onDelete: CASCADE)
+  room: Room @relation(link: TABLE, name: "EntriesByRoom")
+}
+
+type Room {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  name: String! @unique
+  users: [User!]! @relation(name: "UsersByRooms")
+  entries: [Entry!]! @relation(name: "EntriesByUser", onDelete: CASCADE)
 }

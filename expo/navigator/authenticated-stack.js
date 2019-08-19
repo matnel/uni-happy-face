@@ -3,8 +3,9 @@ import { createStackNavigator } from 'react-navigation'
 import i18n from '../lib/i18n'
 import NewEntryContainer from '../screens/new-entry'
 import ConfirmEntryContainer from '../screens/confirm-entry'
-import { NEW_ENTRY_ROUTE, CONFIRM_ENTRY_ROUTE } from './routes'
+import { NEW_ENTRY_ROUTE, CONFIRM_ENTRY_ROUTE, ROOMS_ROUTE } from './routes'
 import UserTabNavigator from './user-tab'
+import RoomsScreenContainer from '../screens/rooms'
 
 const AuthenticatedStackNavigator = createStackNavigator(
   {
@@ -21,6 +22,12 @@ const AuthenticatedStackNavigator = createStackNavigator(
         title: i18n.t('confirmEntry.navigation.title'),
       }),
     },
+    [ROOMS_ROUTE]: {
+      screen: RoomsScreenContainer,
+      navigationOptions: () => ({
+        title: i18n.t('rooms.navigation.title'),
+      }),
+    },
     TabNavigation: {
       screen: UserTabNavigator,
       navigationOptions: {
@@ -29,7 +36,7 @@ const AuthenticatedStackNavigator = createStackNavigator(
     },
   },
   {
-    initialRouteName: 'TabNavigation',
+    initialRouteName: ROOMS_ROUTE,
     defaultNavigationOptions: {
       headerStyle: {
         backgroundColor: '#202020',

@@ -2,7 +2,11 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { checkExistingUser } from '../../store/actions'
-import { PROFILE_ROUTE, WELCOME_ROUTE } from '../../navigator/routes'
+import {
+  WELCOME_ROUTE,
+  ROOMS_ROUTE,
+  PROFILE_ROUTE,
+} from '../../navigator/routes'
 import { logout } from '../../lib/auth'
 import AuthLoadingScreen from './screen'
 
@@ -20,7 +24,11 @@ const AuthLoadingContainer = ({ navigation }) => {
   const navigateBasedOnAuthState = async () => {
     if (hasCheckedExistingUser) {
       if (user) {
-        navigation.navigate(PROFILE_ROUTE, { user })
+        if (user.rooms.length > 0) {
+          navigation.navigate(PROFILE_ROUTE, { room: user.rooms[0] })
+        } else {
+          navigation.navigate(ROOMS_ROUTE)
+        }
       } else {
         await logout()
         navigation.navigate(WELCOME_ROUTE)

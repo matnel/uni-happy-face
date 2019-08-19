@@ -80,4 +80,30 @@ describe('PUT /users/:id', () => {
     expect(response.data.id).toBe(newUser.id)
     expect(response.data.expoPushToken).toBe(expoPushToken)
   })
+
+  it('connects a room with a user', async () => {
+    const randomUserName = Math.random()
+      .toString(36)
+      .substring(7)
+    const randomRoomName = Math.random()
+      .toString(36)
+      .substring(7)
+
+    const [newUserResponse, newRoomResponse] = await Promise.all([
+      client.post('/users', { name: randomUserName }),
+      client.post('/rooms', { name: randomRoomName }),
+    ])
+    const newUser = newUserResponse.data
+    const newRoom = newRoomResponse.data
+
+    expect(newUser.rooms).toBeInstanceOf(Array)
+    expect(newUser.rooms.length).toBe(0)
+
+    const linkResponse = await client.put(`/users/${newUser.id}`, {
+      room: newRoom.id,
+    })
+
+    expect(linkResponse.data.rooms.length).toBe(1)
+    expect(linkResponse.data.rooms[0].name).toBe(newRoom.name)
+  })
 })

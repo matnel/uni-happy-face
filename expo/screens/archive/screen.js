@@ -5,11 +5,11 @@ import {
   Text,
   FlatList,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native'
 
 import theme from '../../theme'
 import FullscreenImage from '../../components/fullscreen-image'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import i18n from '../../lib/i18n'
 
 const ArchiveScreen = ({ entries, hasLoaded, onPressNewEntry }) => (

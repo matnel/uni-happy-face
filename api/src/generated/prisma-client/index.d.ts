@@ -18,6 +18,7 @@ export type Maybe<T> = T | undefined | null;
 export interface Exists {
   entry: (where?: EntryWhereInput) => Promise<boolean>;
   gif: (where?: GifWhereInput) => Promise<boolean>;
+  room: (where?: RoomWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
 }
 
@@ -78,6 +79,25 @@ export interface Prisma {
     first?: Int;
     last?: Int;
   }) => GifConnectionPromise;
+  room: (where: RoomWhereUniqueInput) => RoomNullablePromise;
+  rooms: (args?: {
+    where?: RoomWhereInput;
+    orderBy?: RoomOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<Room>;
+  roomsConnection: (args?: {
+    where?: RoomWhereInput;
+    orderBy?: RoomOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => RoomConnectionPromise;
   user: (where: UserWhereUniqueInput) => UserNullablePromise;
   users: (args?: {
     where?: UserWhereInput;
@@ -131,6 +151,22 @@ export interface Prisma {
   }) => GifPromise;
   deleteGif: (where: GifWhereUniqueInput) => GifPromise;
   deleteManyGifs: (where?: GifWhereInput) => BatchPayloadPromise;
+  createRoom: (data: RoomCreateInput) => RoomPromise;
+  updateRoom: (args: {
+    data: RoomUpdateInput;
+    where: RoomWhereUniqueInput;
+  }) => RoomPromise;
+  updateManyRooms: (args: {
+    data: RoomUpdateManyMutationInput;
+    where?: RoomWhereInput;
+  }) => BatchPayloadPromise;
+  upsertRoom: (args: {
+    where: RoomWhereUniqueInput;
+    create: RoomCreateInput;
+    update: RoomUpdateInput;
+  }) => RoomPromise;
+  deleteRoom: (where: RoomWhereUniqueInput) => RoomPromise;
+  deleteManyRooms: (where?: RoomWhereInput) => BatchPayloadPromise;
   createUser: (data: UserCreateInput) => UserPromise;
   updateUser: (args: {
     data: UserUpdateInput;
@@ -162,6 +198,9 @@ export interface Subscription {
   gif: (
     where?: GifSubscriptionWhereInput
   ) => GifSubscriptionPayloadSubscription;
+  room: (
+    where?: RoomSubscriptionWhereInput
+  ) => RoomSubscriptionPayloadSubscription;
   user: (
     where?: UserSubscriptionWhereInput
   ) => UserSubscriptionPayloadSubscription;
@@ -183,6 +222,28 @@ export type EntryOrderByInput =
   | "updatedAt_ASC"
   | "updatedAt_DESC";
 
+export type RoomOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC"
+  | "name_ASC"
+  | "name_DESC";
+
+export type UserOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC"
+  | "name_ASC"
+  | "name_DESC"
+  | "expoPushToken_ASC"
+  | "expoPushToken_DESC";
+
 export type GifOrderByInput =
   | "id_ASC"
   | "id_DESC"
@@ -198,18 +259,6 @@ export type GifOrderByInput =
   | "height_DESC"
   | "giphyId_ASC"
   | "giphyId_DESC";
-
-export type UserOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC"
-  | "updatedAt_ASC"
-  | "updatedAt_DESC"
-  | "name_ASC"
-  | "name_DESC"
-  | "expoPushToken_ASC"
-  | "expoPushToken_DESC";
 
 export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
@@ -317,9 +366,65 @@ export interface UserWhereInput {
   entries_every?: Maybe<EntryWhereInput>;
   entries_some?: Maybe<EntryWhereInput>;
   entries_none?: Maybe<EntryWhereInput>;
+  rooms_every?: Maybe<RoomWhereInput>;
+  rooms_some?: Maybe<RoomWhereInput>;
+  rooms_none?: Maybe<RoomWhereInput>;
   AND?: Maybe<UserWhereInput[] | UserWhereInput>;
   OR?: Maybe<UserWhereInput[] | UserWhereInput>;
   NOT?: Maybe<UserWhereInput[] | UserWhereInput>;
+}
+
+export interface RoomWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  users_every?: Maybe<UserWhereInput>;
+  users_some?: Maybe<UserWhereInput>;
+  users_none?: Maybe<UserWhereInput>;
+  AND?: Maybe<RoomWhereInput[] | RoomWhereInput>;
+  OR?: Maybe<RoomWhereInput[] | RoomWhereInput>;
+  NOT?: Maybe<RoomWhereInput[] | RoomWhereInput>;
 }
 
 export interface GifWhereInput {
@@ -419,6 +524,11 @@ export type GifWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
 
+export type RoomWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  name?: Maybe<String>;
+}>;
+
 export type UserWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
   name?: Maybe<String>;
@@ -440,6 +550,17 @@ export interface UserCreateWithoutEntriesInput {
   id?: Maybe<ID_Input>;
   name: String;
   expoPushToken?: Maybe<String>;
+  rooms?: Maybe<RoomCreateManyWithoutUsersInput>;
+}
+
+export interface RoomCreateManyWithoutUsersInput {
+  create?: Maybe<RoomCreateWithoutUsersInput[] | RoomCreateWithoutUsersInput>;
+  connect?: Maybe<RoomWhereUniqueInput[] | RoomWhereUniqueInput>;
+}
+
+export interface RoomCreateWithoutUsersInput {
+  id?: Maybe<ID_Input>;
+  name: String;
 }
 
 export interface GifCreateOneWithoutEntryInput {
@@ -470,6 +591,101 @@ export interface UserUpdateOneRequiredWithoutEntriesInput {
 export interface UserUpdateWithoutEntriesDataInput {
   name?: Maybe<String>;
   expoPushToken?: Maybe<String>;
+  rooms?: Maybe<RoomUpdateManyWithoutUsersInput>;
+}
+
+export interface RoomUpdateManyWithoutUsersInput {
+  create?: Maybe<RoomCreateWithoutUsersInput[] | RoomCreateWithoutUsersInput>;
+  delete?: Maybe<RoomWhereUniqueInput[] | RoomWhereUniqueInput>;
+  connect?: Maybe<RoomWhereUniqueInput[] | RoomWhereUniqueInput>;
+  set?: Maybe<RoomWhereUniqueInput[] | RoomWhereUniqueInput>;
+  disconnect?: Maybe<RoomWhereUniqueInput[] | RoomWhereUniqueInput>;
+  update?: Maybe<
+    | RoomUpdateWithWhereUniqueWithoutUsersInput[]
+    | RoomUpdateWithWhereUniqueWithoutUsersInput
+  >;
+  upsert?: Maybe<
+    | RoomUpsertWithWhereUniqueWithoutUsersInput[]
+    | RoomUpsertWithWhereUniqueWithoutUsersInput
+  >;
+  deleteMany?: Maybe<RoomScalarWhereInput[] | RoomScalarWhereInput>;
+  updateMany?: Maybe<
+    RoomUpdateManyWithWhereNestedInput[] | RoomUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface RoomUpdateWithWhereUniqueWithoutUsersInput {
+  where: RoomWhereUniqueInput;
+  data: RoomUpdateWithoutUsersDataInput;
+}
+
+export interface RoomUpdateWithoutUsersDataInput {
+  name?: Maybe<String>;
+}
+
+export interface RoomUpsertWithWhereUniqueWithoutUsersInput {
+  where: RoomWhereUniqueInput;
+  update: RoomUpdateWithoutUsersDataInput;
+  create: RoomCreateWithoutUsersInput;
+}
+
+export interface RoomScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  AND?: Maybe<RoomScalarWhereInput[] | RoomScalarWhereInput>;
+  OR?: Maybe<RoomScalarWhereInput[] | RoomScalarWhereInput>;
+  NOT?: Maybe<RoomScalarWhereInput[] | RoomScalarWhereInput>;
+}
+
+export interface RoomUpdateManyWithWhereNestedInput {
+  where: RoomScalarWhereInput;
+  data: RoomUpdateManyDataInput;
+}
+
+export interface RoomUpdateManyDataInput {
+  name?: Maybe<String>;
 }
 
 export interface UserUpsertWithoutEntriesInput {
@@ -546,7 +762,18 @@ export interface GifUpdateManyMutationInput {
   giphyId?: Maybe<String>;
 }
 
-export interface UserCreateInput {
+export interface RoomCreateInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  users?: Maybe<UserCreateManyWithoutRoomsInput>;
+}
+
+export interface UserCreateManyWithoutRoomsInput {
+  create?: Maybe<UserCreateWithoutRoomsInput[] | UserCreateWithoutRoomsInput>;
+  connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+}
+
+export interface UserCreateWithoutRoomsInput {
   id?: Maybe<ID_Input>;
   name: String;
   expoPushToken?: Maybe<String>;
@@ -563,7 +790,37 @@ export interface EntryCreateWithoutUserInput {
   gif: GifCreateOneWithoutEntryInput;
 }
 
-export interface UserUpdateInput {
+export interface RoomUpdateInput {
+  name?: Maybe<String>;
+  users?: Maybe<UserUpdateManyWithoutRoomsInput>;
+}
+
+export interface UserUpdateManyWithoutRoomsInput {
+  create?: Maybe<UserCreateWithoutRoomsInput[] | UserCreateWithoutRoomsInput>;
+  delete?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  set?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  disconnect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  update?: Maybe<
+    | UserUpdateWithWhereUniqueWithoutRoomsInput[]
+    | UserUpdateWithWhereUniqueWithoutRoomsInput
+  >;
+  upsert?: Maybe<
+    | UserUpsertWithWhereUniqueWithoutRoomsInput[]
+    | UserUpsertWithWhereUniqueWithoutRoomsInput
+  >;
+  deleteMany?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
+  updateMany?: Maybe<
+    UserUpdateManyWithWhereNestedInput[] | UserUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface UserUpdateWithWhereUniqueWithoutRoomsInput {
+  where: UserWhereUniqueInput;
+  data: UserUpdateWithoutRoomsDataInput;
+}
+
+export interface UserUpdateWithoutRoomsDataInput {
   name?: Maybe<String>;
   expoPushToken?: Maybe<String>;
   entries?: Maybe<EntryUpdateManyWithoutUserInput>;
@@ -637,6 +894,105 @@ export interface EntryScalarWhereInput {
   NOT?: Maybe<EntryScalarWhereInput[] | EntryScalarWhereInput>;
 }
 
+export interface UserUpsertWithWhereUniqueWithoutRoomsInput {
+  where: UserWhereUniqueInput;
+  update: UserUpdateWithoutRoomsDataInput;
+  create: UserCreateWithoutRoomsInput;
+}
+
+export interface UserScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  expoPushToken?: Maybe<String>;
+  expoPushToken_not?: Maybe<String>;
+  expoPushToken_in?: Maybe<String[] | String>;
+  expoPushToken_not_in?: Maybe<String[] | String>;
+  expoPushToken_lt?: Maybe<String>;
+  expoPushToken_lte?: Maybe<String>;
+  expoPushToken_gt?: Maybe<String>;
+  expoPushToken_gte?: Maybe<String>;
+  expoPushToken_contains?: Maybe<String>;
+  expoPushToken_not_contains?: Maybe<String>;
+  expoPushToken_starts_with?: Maybe<String>;
+  expoPushToken_not_starts_with?: Maybe<String>;
+  expoPushToken_ends_with?: Maybe<String>;
+  expoPushToken_not_ends_with?: Maybe<String>;
+  AND?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
+  OR?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
+  NOT?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
+}
+
+export interface UserUpdateManyWithWhereNestedInput {
+  where: UserScalarWhereInput;
+  data: UserUpdateManyDataInput;
+}
+
+export interface UserUpdateManyDataInput {
+  name?: Maybe<String>;
+  expoPushToken?: Maybe<String>;
+}
+
+export interface RoomUpdateManyMutationInput {
+  name?: Maybe<String>;
+}
+
+export interface UserCreateInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  expoPushToken?: Maybe<String>;
+  entries?: Maybe<EntryCreateManyWithoutUserInput>;
+  rooms?: Maybe<RoomCreateManyWithoutUsersInput>;
+}
+
+export interface UserUpdateInput {
+  name?: Maybe<String>;
+  expoPushToken?: Maybe<String>;
+  entries?: Maybe<EntryUpdateManyWithoutUserInput>;
+  rooms?: Maybe<RoomUpdateManyWithoutUsersInput>;
+}
+
 export interface UserUpdateManyMutationInput {
   name?: Maybe<String>;
   expoPushToken?: Maybe<String>;
@@ -662,6 +1018,17 @@ export interface GifSubscriptionWhereInput {
   AND?: Maybe<GifSubscriptionWhereInput[] | GifSubscriptionWhereInput>;
   OR?: Maybe<GifSubscriptionWhereInput[] | GifSubscriptionWhereInput>;
   NOT?: Maybe<GifSubscriptionWhereInput[] | GifSubscriptionWhereInput>;
+}
+
+export interface RoomSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<RoomWhereInput>;
+  AND?: Maybe<RoomSubscriptionWhereInput[] | RoomSubscriptionWhereInput>;
+  OR?: Maybe<RoomSubscriptionWhereInput[] | RoomSubscriptionWhereInput>;
+  NOT?: Maybe<RoomSubscriptionWhereInput[] | RoomSubscriptionWhereInput>;
 }
 
 export interface UserSubscriptionWhereInput {
@@ -736,6 +1103,15 @@ export interface UserPromise extends Promise<User>, Fragmentable {
     first?: Int;
     last?: Int;
   }) => T;
+  rooms: <T = FragmentableArray<Room>>(args?: {
+    where?: RoomWhereInput;
+    orderBy?: RoomOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface UserSubscription
@@ -755,6 +1131,15 @@ export interface UserSubscription
     first?: Int;
     last?: Int;
   }) => T;
+  rooms: <T = Promise<AsyncIterator<RoomSubscription>>>(args?: {
+    where?: RoomWhereInput;
+    orderBy?: RoomOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface UserNullablePromise
@@ -768,6 +1153,74 @@ export interface UserNullablePromise
   entries: <T = FragmentableArray<Entry>>(args?: {
     where?: EntryWhereInput;
     orderBy?: EntryOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  rooms: <T = FragmentableArray<Room>>(args?: {
+    where?: RoomWhereInput;
+    orderBy?: RoomOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface Room {
+  id: ID_Output;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+  name: String;
+}
+
+export interface RoomPromise extends Promise<Room>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  name: () => Promise<String>;
+  users: <T = FragmentableArray<User>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface RoomSubscription
+  extends Promise<AsyncIterator<Room>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  name: () => Promise<AsyncIterator<String>>;
+  users: <T = Promise<AsyncIterator<UserSubscription>>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface RoomNullablePromise
+  extends Promise<Room | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  name: () => Promise<String>;
+  users: <T = FragmentableArray<User>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
@@ -952,6 +1405,60 @@ export interface AggregateGifSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
+export interface RoomConnection {
+  pageInfo: PageInfo;
+  edges: RoomEdge[];
+}
+
+export interface RoomConnectionPromise
+  extends Promise<RoomConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<RoomEdge>>() => T;
+  aggregate: <T = AggregateRoomPromise>() => T;
+}
+
+export interface RoomConnectionSubscription
+  extends Promise<AsyncIterator<RoomConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<RoomEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateRoomSubscription>() => T;
+}
+
+export interface RoomEdge {
+  node: Room;
+  cursor: String;
+}
+
+export interface RoomEdgePromise extends Promise<RoomEdge>, Fragmentable {
+  node: <T = RoomPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface RoomEdgeSubscription
+  extends Promise<AsyncIterator<RoomEdge>>,
+    Fragmentable {
+  node: <T = RoomSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateRoom {
+  count: Int;
+}
+
+export interface AggregateRoomPromise
+  extends Promise<AggregateRoom>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateRoomSubscription
+  extends Promise<AsyncIterator<AggregateRoom>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
 export interface UserConnection {
   pageInfo: PageInfo;
   edges: UserEdge[];
@@ -1128,6 +1635,56 @@ export interface GifPreviousValuesSubscription
   giphyId: () => Promise<AsyncIterator<String>>;
 }
 
+export interface RoomSubscriptionPayload {
+  mutation: MutationType;
+  node: Room;
+  updatedFields: String[];
+  previousValues: RoomPreviousValues;
+}
+
+export interface RoomSubscriptionPayloadPromise
+  extends Promise<RoomSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = RoomPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = RoomPreviousValuesPromise>() => T;
+}
+
+export interface RoomSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<RoomSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = RoomSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = RoomPreviousValuesSubscription>() => T;
+}
+
+export interface RoomPreviousValues {
+  id: ID_Output;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+  name: String;
+}
+
+export interface RoomPreviousValuesPromise
+  extends Promise<RoomPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  name: () => Promise<String>;
+}
+
+export interface RoomPreviousValuesSubscription
+  extends Promise<AsyncIterator<RoomPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  name: () => Promise<AsyncIterator<String>>;
+}
+
 export interface UserSubscriptionPayload {
   mutation: MutationType;
   node: User;
@@ -1229,6 +1786,10 @@ export const models: Model[] = [
   },
   {
     name: "Entry",
+    embedded: false
+  },
+  {
+    name: "Room",
     embedded: false
   }
 ];

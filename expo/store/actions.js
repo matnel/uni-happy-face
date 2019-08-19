@@ -22,6 +22,18 @@ import {
   FETCH_WEEK_ENTRIES,
   FETCH_WEEK_ENTRIES_SUCCESS,
   FETCH_WEEK_ENTRIES_ERROR,
+  FETCH_ROOMS,
+  FETCH_ROOMS_SUCCESS,
+  FETCH_ROOMS_ERROR,
+  FETCH_ROOM_ENTRIES,
+  FETCH_ROOM_ENTRIES_SUCCESS,
+  FETCH_ROOM_ENTRIES_ERROR,
+  FETCH_USER_ROOM_ENTRIES,
+  FETCH_USER_ROOM_ENTRIES_SUCCESS,
+  FETCH_USER_ROOM_ENTRIES_ERROR,
+  ADD_USER_ROOM_LINK,
+  ADD_USER_ROOM_LINK_SUCCESS,
+  ADD_USER_ROOM_LINK_ERROR,
 } from './action-types'
 
 const markCheckedExistingUser = ({
@@ -38,13 +50,22 @@ export const checkExistingUser = () => async (dispatch, _, { api }) => {
   if (username) {
     const user = await api.getUser(username)
     if (user) {
-      const { entries, currentEntry } = await api.getUserEntries(user.id)
-      dispatch(markCheckedExistingUser({ user, entries, currentEntry }))
-      return
+      if (user.rooms.length > 0) {
+        const room = user.rooms[0]
+        const [entries, currentEntries] = await Promise.all([
+          api.getEntries({ user, room }),
+          api.getEntries({ user, room, current: true }),
+        ])
+        const currentEntry =
+          currentEntries.length > 0 ? currentEntries[0] : undefined
+        dispatch(markCheckedExistingUser({ user, entries, currentEntry }))
+      } else {
+        dispatch(markCheckedExistingUser({ user }))
+      }
     }
+  } else {
+    dispatch(markCheckedExistingUser())
   }
-
-  dispatch(markCheckedExistingUser())
 }
 
 const fetchUserQuery = () => ({ type: FETCH_USER_QUERY })
@@ -175,5 +196,99 @@ export const getWeekEntries = () => async (dispatch, _, { api }) => {
     dispatch(fetchWeekEntriesSuccess(entries))
   } catch (error) {
     dispatch(fetchWeekEntriesError(error))
+  }
+}
+
+const fetchRooms = () => ({ type: FETCH_ROOMS })
+const fetchRoomsSuccess = rooms => ({
+  type: FETCH_ROOMS_SUCCESS,
+  payload: { rooms },
+})
+const fetchRoomsError = error => ({
+  type: FETCH_ROOMS_ERROR,
+  payload: { error },
+})
+
+export const getRooms = () => async (dispatch, _, { api }) => {
+  dispatch(fetchRooms())
+  try {
+    const rooms = await api.getRooms()
+    dispatch(fetchRoomsSuccess(rooms))
+  } catch (error) {
+    dispatch(fetchRoomsError(error))
+  }
+}
+
+const fetchRoomEntries = room => ({
+  type: FETCH_ROOM_ENTRIES,
+  payload: { room },
+})
+const fetchRoomEntriesSuccess = entries => ({
+  type: FETCH_ROOM_ENTRIES_SUCCESS,
+  payload: { entries },
+})
+const fetchRoomEntriesError = error => ({
+  type: FETCH_ROOM_ENTRIES_ERROR,
+  payload: { error },
+})
+
+export const getRoomEntries = room => async (dispatch, _, { api }) => {
+  dispatch(fetchRoomEntries(room))
+  try {
+    const entries = await api.getEntries({ room, current: true })
+    dispatch(fetchRoomEntriesSuccess(entries))
+  } catch (error) {
+    dispatch(fetchRoomEntriesError(error))
+  }
+}
+
+const fetchUserRoomEntries = room => ({
+  type: FETCH_USER_ROOM_ENTRIES,
+  payload: { room },
+})
+const fetchUserRoomEntriesSuccess = entries => ({
+  type: FETCH_USER_ROOM_ENTRIES_SUCCESS,
+  payload: { entries },
+})
+const fetchUserRoomEntriesError = error => ({
+  type: FETCH_USER_ROOM_ENTRIES_ERROR,
+  payload: { error },
+})
+
+export const getUserRoomEntries = room => async (
+  dispatch,
+  getState,
+  { api }
+) => {
+  dispatch(fetchUserRoomEntries(room))
+  const user = getState().userData.value
+  try {
+    const entries = await api.getEntries({ room, user })
+    dispatch(fetchUserRoomEntriesSuccess(entries))
+  } catch (error) {
+    dispatch(fetchUserRoomEntriesError(error))
+  }
+}
+
+const addUserRoomLink = room => ({
+  type: ADD_USER_ROOM_LINK,
+  payload: { room },
+})
+const addUserRoomLinkSuccess = () => ({ type: ADD_USER_ROOM_LINK_SUCCESS })
+const addUserRoomLinkError = error => ({
+  type: ADD_USER_ROOM_LINK_ERROR,
+  payload: { error },
+})
+
+export const linkUserRoom = room => async (dispatch, getState, { api }) => {
+  const user = getState().userData.value
+  dispatch(addUserRoomLink(room))
+
+  const updatedUser = await api.updateUser(user, { room })
+
+  if (updatedUser) {
+    dispatch(addUserRoomLinkSuccess())
+  } else {
+    dispatch(addUserRoomLinkError('Unable to link user to room'))
   }
 }

@@ -18,6 +18,18 @@ import {
   FETCH_WEEK_ENTRIES,
   FETCH_WEEK_ENTRIES_SUCCESS,
   FETCH_WEEK_ENTRIES_ERROR,
+  FETCH_ROOMS,
+  FETCH_ROOMS_SUCCESS,
+  FETCH_ROOMS_ERROR,
+  FETCH_ROOM_ENTRIES,
+  FETCH_ROOM_ENTRIES_SUCCESS,
+  FETCH_ROOM_ENTRIES_ERROR,
+  FETCH_USER_ROOM_ENTRIES,
+  FETCH_USER_ROOM_ENTRIES_SUCCESS,
+  FETCH_USER_ROOM_ENTRIES_ERROR,
+  ADD_USER_ROOM_LINK,
+  ADD_USER_ROOM_LINK_SUCCESS,
+  ADD_USER_ROOM_LINK_ERROR,
 } from './action-types'
 
 const INITIAL_STATE = {
@@ -53,6 +65,24 @@ const INITIAL_STATE = {
     error: null,
     value: [],
   },
+  rooms: {
+    hasLoaded: false,
+    loading: false,
+    error: null,
+    value: [],
+  },
+  roomEntries: {
+    hasLoaded: false,
+    loading: false,
+    error: null,
+    value: [],
+  },
+  userRoomEntries: {
+    hasLoaded: false,
+    loading: false,
+    error: null,
+    value: [],
+  },
 }
 
 const rootReducer = (state = INITIAL_STATE, action) => {
@@ -62,8 +92,9 @@ const rootReducer = (state = INITIAL_STATE, action) => {
         ...state,
         hasCheckedExistingUser: true,
         userData: { ...state.userData, value: action.payload.user },
-        userEntries: {
-          ...state.userEntries,
+        userRoomEntries: {
+          ...state.userRoomEntries,
+          hasLoaded: action.payload.entries.length > 0,
           value: action.payload.entries,
         },
         userCurrentEntry: {
@@ -227,6 +258,113 @@ const rootReducer = (state = INITIAL_STATE, action) => {
           ...state.weekEntries,
           loading: false,
           error: action.payload.error,
+        },
+      }
+
+    case FETCH_ROOMS:
+      return { ...state, rooms: { ...state.rooms, loading: true } }
+
+    case FETCH_ROOMS_SUCCESS:
+      return {
+        ...state,
+        rooms: {
+          ...state.rooms,
+          hasLoaded: true,
+          loading: false,
+          error: null,
+          value: action.payload.rooms,
+        },
+      }
+
+    case FETCH_ROOMS_ERROR:
+      return {
+        ...state,
+        rooms: {
+          ...state.rooms,
+          loading: false,
+          error: action.payload.error,
+        },
+      }
+
+    case FETCH_ROOM_ENTRIES:
+      return { ...state, roomEntries: { ...state.roomEntries, loading: true } }
+
+    case FETCH_ROOM_ENTRIES_SUCCESS:
+      return {
+        ...state,
+        roomEntries: {
+          ...state.roomEntries,
+          hasLoaded: true,
+          loading: false,
+          error: null,
+          value: action.payload.entries,
+        },
+      }
+
+    case FETCH_ROOM_ENTRIES_ERROR:
+      return {
+        ...state,
+        roomEntries: {
+          ...state.roomEntries,
+          loading: false,
+          error: action.payload.error,
+        },
+      }
+
+    case FETCH_USER_ROOM_ENTRIES:
+      return {
+        ...state,
+        userRoomEntries: { ...state.userRoomEntries, loading: true },
+      }
+
+    case FETCH_USER_ROOM_ENTRIES_SUCCESS:
+      return {
+        ...state,
+        userRoomEntries: {
+          ...state.userRoomEntries,
+          hasLoaded: true,
+          loading: false,
+          error: null,
+          value: action.payload.entries,
+        },
+      }
+
+    case FETCH_USER_ROOM_ENTRIES_ERROR:
+      return {
+        ...state,
+        userRoomEntries: {
+          ...state.userRoomEntries,
+          loading: false,
+          error: action.payload.error,
+        },
+      }
+
+    case ADD_USER_ROOM_LINK:
+      return {
+        ...state,
+        userData: {
+          ...state.userData,
+          value: {
+            ...state.userData.value,
+            rooms: [...state.userData.value.rooms, action.payload.room],
+          },
+        },
+      }
+
+    case ADD_USER_ROOM_LINK_SUCCESS:
+      return state
+
+    case ADD_USER_ROOM_LINK_ERROR:
+      return {
+        ...state,
+        userData: {
+          ...state.userData,
+          value: {
+            ...state.userData.value,
+            rooms: state.userData.value.rooms.filter(
+              room => room.id !== action.payload.room.id
+            ),
+          },
         },
       }
 

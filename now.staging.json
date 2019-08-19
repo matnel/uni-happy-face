@@ -17,6 +17,7 @@
     { "src": "/api/users(.*)", "dest": "api/src/routes/users" },
     { "src": "/api/entries(.*)", "dest": "api/src/routes/entries" },
     { "src": "/api/notifications(.*)", "dest": "api/src/routes/notifications" },
+    { "src": "/api/rooms(.*)", "dest": "api/src/routes/rooms" },
     {
       "src": "/(.*)",
       "dest": "/next/$1"

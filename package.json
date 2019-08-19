@@ -23,7 +23,7 @@
   "homepage": "https://github.com/futurice/stockholm-happy-face#readme",
   "devDependencies": {
     "jest": "^24.8.0",
-    "start-server-and-test": "^1.9.2"
+    "start-server-and-test": "^1.10.0"
   },
   "dependencies": {
     "axios": "^0.19.0"

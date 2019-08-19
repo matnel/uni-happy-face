@@ -62,6 +62,11 @@ const en = {
       button: 'Find a GIF',
     },
   },
+  rooms: {
+    navigation: {
+      title: 'Choose a room',
+    },
+  },
 }
 
 const sv = {
@@ -123,6 +128,11 @@ const sv = {
     submitEntry: {
       message: 'Bli den första att posta ett inlägg den här veckan!',
       button: 'Hitta en GIF',
+    },
+  },
+  rooms: {
+    navigation: {
+      title: 'Välj ett rum',
     },
   },
 }

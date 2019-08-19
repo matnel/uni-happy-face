@@ -90,9 +90,13 @@ apiClient.saveEntry = async (user, { giphyId, url, width, height }) => {
   }
 }
 
-apiClient.updateUser = async (user, { expoPushToken }) => {
+apiClient.updateUser = async (user, { expoPushToken, room }) => {
+  console.log('api.updateUser')
   try {
-    const response = await apiClient.put(`/users/${user.id}`, { expoPushToken })
+    const response = await apiClient.put(`/users/${user.id}`, {
+      expoPushToken,
+      room: room ? room.id : undefined,
+    })
     return response.data
   } catch (error) {
     console.error(error)
@@ -110,6 +114,22 @@ apiClient.getWeeklyEntries = async () => {
     console.log(error)
     throw error
   }
+}
+
+apiClient.getRooms = async () => {
+  const response = await apiClient.get('/rooms')
+  return response.data
+}
+
+apiClient.getEntries = async ({ room, user, current = false }) => {
+  const params = {
+    room: (room || {}).id,
+    user: (user || {}).id,
+    week: current ? 'current' : undefined,
+  }
+
+  const response = await apiClient.get('/entries', { params })
+  return response.data
 }
 
 export default apiClient

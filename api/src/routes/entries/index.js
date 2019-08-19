@@ -48,6 +48,10 @@ router.get('/', async (req, res) => {
     whereQuery.user = { name: req.query.name }
   }
 
+  if (req.query.room) {
+    whereQuery.room = { id: req.query.room }
+  }
+
   if (req.query.week) {
     let fromDate, toDate
     if (req.query.week === 'current') {
