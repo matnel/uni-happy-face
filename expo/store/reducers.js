@@ -95,7 +95,11 @@ const rootReducer = (state = INITIAL_STATE, action) => {
         userRoomEntries: {
           ...state.userRoomEntries,
           hasLoaded: action.payload.entries.length > 0,
-          value: action.payload.entries,
+          value: action.payload.currentEntry
+            ? action.payload.entries.filter(
+                entry => entry.id !== action.payload.currentEntry.id
+              )
+            : action.payload.entries,
         },
         userCurrentEntry: {
           ...state.userCurrentEntry,

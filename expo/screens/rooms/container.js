@@ -9,7 +9,9 @@ const RoomsScreenContainer = ({ navigation }) => {
   const dispatch = useDispatch()
   const rooms = useSelector(state => state.rooms.value)
   const hasLoaded = useSelector(state => state.rooms.hasLoaded)
-  const userRooms = useSelector(state => state.userData.value.rooms)
+  const userRooms = useSelector(state =>
+    state.userData.value ? state.userData.value.rooms : []
+  )
   const isFirstRun = useRef(true)
 
   const handlePressNew = useCallback(

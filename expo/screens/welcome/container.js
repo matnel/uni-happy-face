@@ -56,7 +56,11 @@ const WelcomeContainer = ({ navigation }) => {
 
   useEffect(() => {
     if (user) {
-      navigation.navigate(PROFILE_ROUTE)
+      if (user.rooms.length > 0) {
+        navigation.navigate(PROFILE_ROUTE, { room: user.rooms[0] })
+      } else {
+        navigation.navigate(ROOMS_ROUTE)
+      }
     }
   }, [user])
 
