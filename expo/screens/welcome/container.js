@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { queryUsers, login } from '../../store/actions'
-import { PROFILE_ROUTE } from '../../navigator/routes'
+import { PROFILE_ROUTE, ROOMS_ROUTE } from '../../navigator/routes'
 import WelcomeScreen from './screen'
 
 const WAIT_INTERVAL = 750
@@ -30,6 +30,7 @@ const WelcomeContainer = ({ navigation }) => {
   const user = useSelector(state => state.userData.value)
   const loadingUser = useSelector(state => state.userData.loading)
   const loadingUsers = useSelector(state => state.queryUsers.loading)
+  const selectedRoom = useSelector(state => state.selectedRoom)
 
   const [username, setUsername] = useState('')
   const [timer, setTimer] = useState(null)
@@ -56,8 +57,8 @@ const WelcomeContainer = ({ navigation }) => {
 
   useEffect(() => {
     if (user) {
-      if (user.rooms.length > 0) {
-        navigation.navigate(PROFILE_ROUTE, { room: user.rooms[0] })
+      if (selectedRoom) {
+        navigation.navigate(PROFILE_ROUTE)
       } else {
         navigation.navigate(ROOMS_ROUTE)
       }

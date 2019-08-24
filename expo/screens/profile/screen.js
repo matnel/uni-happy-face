@@ -23,6 +23,7 @@ const ProfileScreen = ({
   onPressEntry,
   onPressDeleteCurrentEntry,
   isDeleting,
+  user,
 }) => (
   <ScrollView style={styles.container}>
     <StatusBar barStyle="light-content" />
@@ -34,7 +35,7 @@ const ProfileScreen = ({
           isDeleting={isDeleting}
         />
       ) : (
-        <EntryForm onPress={onPressInput} />
+        <EntryForm onPress={onPressInput} user={user} />
       )}
     </View>
 

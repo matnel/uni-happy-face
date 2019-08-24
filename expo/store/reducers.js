@@ -30,6 +30,7 @@ import {
   ADD_USER_ROOM_LINK,
   ADD_USER_ROOM_LINK_SUCCESS,
   ADD_USER_ROOM_LINK_ERROR,
+  SELECT_ROOM,
 } from './action-types'
 
 const INITIAL_STATE = {
@@ -65,6 +66,7 @@ const INITIAL_STATE = {
     error: null,
     value: [],
   },
+  selectedRoom: null,
   rooms: {
     hasLoaded: false,
     loading: false,
@@ -86,12 +88,18 @@ const INITIAL_STATE = {
 }
 
 const rootReducer = (state = INITIAL_STATE, action) => {
+  console.table(action)
   switch (action.type) {
     case MARK_CHECKED_EXISTING_USER:
       return {
         ...state,
         hasCheckedExistingUser: true,
         userData: { ...state.userData, value: action.payload.user },
+        selectedRoom: action.payload.user
+          ? action.payload.user.rooms.length > 0
+            ? action.payload.user.rooms[0]
+            : null
+          : null,
         userRoomEntries: {
           ...state.userRoomEntries,
           hasLoaded: action.payload.entries.length > 0,
@@ -123,6 +131,10 @@ const rootReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         userData: { loading: false, error: null, value: action.payload.user },
+        selectedRoom:
+          action.payload.user.rooms.length > 0
+            ? action.payload.user.rooms[0]
+            : null,
         userEntries: {
           ...state.userEntries,
           error: null,
@@ -353,6 +365,11 @@ const rootReducer = (state = INITIAL_STATE, action) => {
             rooms: [...state.userData.value.rooms, action.payload.room],
           },
         },
+        selectedRoom: action.payload.room,
+        userRoomEntries: {
+          ...state.userRoomEntries,
+          hasLoaded: true,
+        },
       }
 
     case ADD_USER_ROOM_LINK_SUCCESS:
@@ -370,6 +387,13 @@ const rootReducer = (state = INITIAL_STATE, action) => {
             ),
           },
         },
+      }
+
+    case SELECT_ROOM:
+      return {
+        ...state,
+        selectedRoom: action.payload.room,
+        userRoomEntries: { ...state.userRoomEntries, hasLoaded: false },
       }
 
     default:

@@ -4,9 +4,11 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import i18n from '../../lib/i18n'
 import theme from '../../theme'
 
-const EntryForm = ({ onPress }) => (
+const EntryForm = ({ onPress, user }) => (
   <View style={styles.container}>
-    <Text style={styles.label}>{i18n.t('profile.entryForm.title')}</Text>
+    <Text style={styles.label}>
+      {user && i18n.t('profile.entryForm.title', { name: user.name })}
+    </Text>
     <TouchableOpacity style={styles.input} onPress={onPress}>
       <Text style={styles.placeholder}>
         {i18n.t('profile.entryForm.placeholder')}

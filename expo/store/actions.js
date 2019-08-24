@@ -34,6 +34,7 @@ import {
   ADD_USER_ROOM_LINK,
   ADD_USER_ROOM_LINK_SUCCESS,
   ADD_USER_ROOM_LINK_ERROR,
+  SELECT_ROOM,
 } from './action-types'
 
 const markCheckedExistingUser = ({
@@ -292,3 +293,5 @@ export const linkUserRoom = room => async (dispatch, getState, { api }) => {
     dispatch(addUserRoomLinkError('Unable to link user to room'))
   }
 }
+
+export const selectRoom = room => ({ type: SELECT_ROOM, payload: { room } })

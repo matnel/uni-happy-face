@@ -16,6 +16,7 @@ const AuthLoadingContainer = ({ navigation }) => {
     state => state.hasCheckedExistingUser
   )
   const user = useSelector(state => state.userData.value)
+  const selectedRoom = useSelector(state => state.selectedRoom)
 
   useEffect(() => {
     dispatch(checkExistingUser())
@@ -24,8 +25,8 @@ const AuthLoadingContainer = ({ navigation }) => {
   const navigateBasedOnAuthState = async () => {
     if (hasCheckedExistingUser) {
       if (user) {
-        if (user.rooms.length > 0) {
-          navigation.navigate(PROFILE_ROUTE, { room: user.rooms[0] })
+        if (selectedRoom) {
+          navigation.navigate(PROFILE_ROUTE)
         } else {
           navigation.navigate(ROOMS_ROUTE)
         }

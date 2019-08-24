@@ -14,17 +14,18 @@ const ProfileContainer = ({ navigation }) => {
     state => state.userCurrentEntry.deleting
   )
   const hasLoadedEntries = useSelector(state => state.userRoomEntries.hasLoaded)
-  const { room } = navigation.state.params
+  const selectedRoom = useSelector(state => state.selectedRoom)
+  const user = useSelector(state => state.userData.value)
 
   const handlePressInput = () => navigation.navigate(NEW_ENTRY_ROUTE)
   const handlePressEntry = entry => navigation.navigate(ENTRY_ROUTE, { entry })
   const handlePressDeleteCurrentEntry = () => dispatch(deleteCurrentEntry())
 
   useEffect(() => {
-    if (room && !hasLoadedEntries) {
-      dispatch(getUserRoomEntries(room))
+    if (selectedRoom && !hasLoadedEntries) {
+      dispatch(getUserRoomEntries(selectedRoom))
     }
-  }, [room, hasLoadedEntries])
+  }, [selectedRoom, hasLoadedEntries])
 
   return (
     <ProfileScreen
@@ -34,6 +35,7 @@ const ProfileContainer = ({ navigation }) => {
       onPressEntry={handlePressEntry}
       onPressDeleteCurrentEntry={handlePressDeleteCurrentEntry}
       isDeleting={deletingCurrentEntry}
+      user={user}
     />
   )
 }

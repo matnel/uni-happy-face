@@ -4,11 +4,11 @@ import { View, TouchableOpacity, Text, StyleSheet } from 'react-native'
 import i18n from '../../lib/i18n'
 import theme from '../../theme'
 
-const ProfileHeaderRight = ({ onPressLogout }) => (
+const ProfileHeaderRight = ({ onPressExit }) => (
   <View style={styles.container}>
-    <TouchableOpacity onPress={onPressLogout}>
+    <TouchableOpacity onPress={onPressExit}>
       <Text style={styles.label}>
-        {i18n.t('profile.navigation.logoutButton')}
+        {i18n.t('profile.navigation.exitButton')}
       </Text>
     </TouchableOpacity>
   </View>

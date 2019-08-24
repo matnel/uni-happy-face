@@ -1,12 +1,17 @@
 import React, { useEffect, useCallback, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { getRooms, linkUserRoom } from '../../store/actions'
-import { PROFILE_ROUTE, NEW_ROOM_ROUTE } from '../../navigator/routes'
+import { getRooms, linkUserRoom, logout } from '../../store/actions'
+import {
+  PROFILE_ROUTE,
+  NEW_ROOM_ROUTE,
+  WELCOME_ROUTE,
+} from '../../navigator/routes'
 import RoomsScreen from './screen'
 
 const RoomsScreenContainer = ({ navigation }) => {
   const dispatch = useDispatch()
+  const user = useSelector(state => state.userData.value)
   const rooms = useSelector(state => state.rooms.value)
   const hasLoaded = useSelector(state => state.rooms.hasLoaded)
   const userRooms = useSelector(state =>
@@ -39,12 +44,19 @@ const RoomsScreenContainer = ({ navigation }) => {
     }
   }, [userRooms.length])
 
+  const handlePressSignOut = useCallback(() => dispatch(logout()))
+
+  useEffect(() => {
+    if (!user) navigation.navigate(WELCOME_ROUTE)
+  }, [user])
+
   return (
     <RoomsScreen
       rooms={rooms}
       hasLoaded={hasLoaded}
       onPressNew={handlePressNew}
       onPressRoom={handlePressRoom}
+      onPressSignOut={handlePressSignOut}
     />
   )
 }

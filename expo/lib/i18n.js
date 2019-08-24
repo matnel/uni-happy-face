@@ -9,6 +9,7 @@ const en = {
   },
   profile: {
     navigation: {
+      exitButton: 'Exit',
       logoutButton: 'Logout',
       headerBackTitle: 'Profile',
     },
@@ -18,7 +19,7 @@ const en = {
       deleteButton: 'Delete',
     },
     entryForm: {
-      title: "How's your week?",
+      title: "How's your week, %{name}?",
       placeholder: 'Happy, sad, crazy...',
     },
     prevWeeksHeading: 'Previous weeks',
@@ -64,8 +65,9 @@ const en = {
   },
   rooms: {
     navigation: {
-      title: 'Choose a room',
+      title: 'Where do you belong?',
     },
+    signOutButton: 'Sign out',
   },
 }
 
@@ -77,6 +79,7 @@ const sv = {
   },
   profile: {
     navigation: {
+      exitButton: 'Gå ut',
       logoutButton: 'Logga ut',
       headerBackTitle: 'Profil',
     },
@@ -86,7 +89,7 @@ const sv = {
       deleteButton: 'Radera',
     },
     entryForm: {
-      title: 'Hur är din vecka?',
+      title: 'Hur är din vecka, %{name}?',
       placeholder: 'Glad, ledsen, galen...',
     },
     prevWeeksHeading: 'Tidigare veckor',
@@ -132,8 +135,9 @@ const sv = {
   },
   rooms: {
     navigation: {
-      title: 'Välj ett rum',
+      title: 'Var hör du hemma?',
     },
+    signOutButton: 'Logga ut',
   },
 }
 

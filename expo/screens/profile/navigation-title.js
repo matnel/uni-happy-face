@@ -5,8 +5,8 @@ import { Text, StyleSheet } from 'react-native'
 import theme from '../../theme'
 
 const ProfileNavigationTitle = () => {
-  const user = useSelector(state => state.userData.value)
-  return <Text style={styles.title}>{user && user.name}</Text>
+  const room = useSelector(state => state.selectedRoom)
+  return <Text style={styles.title}>{room && room.name}</Text>
 }
 
 const styles = StyleSheet.create({
